@@ -25,8 +25,8 @@ public class ExcelReaderTest {
 
 		   Map <Integer,CustDetailsData> customersDetails = new HashMap <Integer,CustDetailsData> ();
 			
-			customersDetails = excelReader.ReadCustDetailsDataFile("/Users/david/OneDrive/JavaProjects/ScriptCreator/Input/textExcel.xlsx");
-//		    customersDetails = excelReader.ReadCustDetailsDataFile("/Users/david/OneDrive/JavaProjects/ScriptCreator/Input/Direcciones Incidente 7805.xlsx");
+			customersDetails = excelReader.readCustDetailsDataFile("/Users/david/OneDrive/JavaProjects/ScriptCreator/Input/textExcel.xlsx");
+//		    customersDetails = excelReader.readCustDetailsDataFile("/Users/david/OneDrive/JavaProjects/ScriptCreator/Input/Direcciones Incidente 7805.xlsx");
 
 
 			
