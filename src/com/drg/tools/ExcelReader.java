@@ -497,7 +497,7 @@ public class ExcelReader {
 	private static Map <Integer,Row> ReadExcelDataFile (String filepath, boolean withHeader){
 
      	if (logger.isDebugEnabled()){
- 			logger.debug("Entering in ReadExcelDataFile with filepath= " + filepath + "and withHeader = " + withHeader);
+ 			logger.debug("Entering in ReadExcelDataFile with filepath= " + filepath + " and withHeader = " + withHeader);
  		}
 
 		 Map <Integer,Row> excellines = new HashMap <Integer,Row> ();
@@ -509,7 +509,10 @@ public class ExcelReader {
 			 //creamos un Workbook
 			  try {
 
-				  
+			     	if (logger.isDebugEnabled()){
+			 			logger.debug("filepath al workbook= " + filepath);
+			 		}
+			  			     	
 				  Workbook workbookToRead = WorkbookFactory.create(new File (filepath));
 				
 				// Recupero la cantidad de hojas en el archivo excel

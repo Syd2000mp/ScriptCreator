@@ -44,7 +44,7 @@ public class ExcelReaderTest {
 		   Map <Integer,CustDetailsData> customersDetails = new HashMap <Integer,CustDetailsData> ();
 			
 			customersDetails = excelReader.readCustDetailsDataFile("/Users/david/OneDrive/JavaProjects/ScriptCreator/Input/textExcel.xlsx",false);
-//		    customersDetails = excelReader.ReadCustDetailsDataFile("/Users/david/OneDrive/JavaProjects/ScriptCreator/Input/Direcciones Incidente 7805.xlsx",false);
+//		    customersDetails = excelReader.readCustDetailsDataFile("/Users/david/OneDrive/JavaProjects/ScriptCreator/Input/Direcciones Incidente 7805.xlsx",false);
 
 			System.out.println("En ell test el customersDetails.size() = " + customersDetails.size());
 			
