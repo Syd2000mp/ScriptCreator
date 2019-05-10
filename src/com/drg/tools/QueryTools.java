@@ -687,9 +687,11 @@ public class QueryTools {
 	}//End of createPATDEsafiliationQuery
 	
 	//TODO: Hacer el backup y rollback gen√©rico pas√°ndole el listado de tablas a respaldar
-
+	
 	public Map <Integer,String> createCustDetailsBackupQuery (String requestName, String processDate, String schema, Map <Integer,String> tablas )
 	{
+		//TODO: Hacer este Backup query creator solo para custdetails, seleccionando solo los registros que modificaremos en base al rut
+
 		Map <Integer,String> backupQueryLines = new HashMap <Integer,String> ();
 		
 		if ((requestName!=null) && (!"".equalsIgnoreCase(requestName))) {
@@ -701,6 +703,8 @@ public class QueryTools {
 					}
 
 					String query = "CREATE TABLE "+ schema + "." + tabla + "_"+ requestName +"_"+ processDate +" AS SELECT * FROM "+ schema + "." + tabla +";";
+
+					//TODO: AÒadir una lÌnea que inserte en la tabla nueva solo el registro del rut que queremos respaldar, de esa manera solo nos llevamos los registros modificados
 					
 					backupQueryLines.put(pos, query);
 					
@@ -720,6 +724,43 @@ public class QueryTools {
 		return backupQueryLines;				
 	}//Fin de createCustDetailsBackupQuery
 	
+	public Map <Integer,String> createCDMSTBackupQuery (String requestName, String processDate, String schema, Map <Integer,String> tablas )
+	{
+		//TODO: Hacer este Backup query creator solo para CDMS, seleccionando solo los registros que modificaremos en base al rut
+
+		Map <Integer,String> backupQueryLines = new HashMap <Integer,String> ();
+		
+		if ((requestName!=null) && (!"".equalsIgnoreCase(requestName))) {
+			if ((tablas!=null) && (!tablas.isEmpty())) {
+
+				tablas.forEach((pos,tabla)->{
+					if (logger.isDebugEnabled()){
+						logger.debug("Posicion : " + pos + " valor : " + tabla);
+					}
+
+					String query = "CREATE TABLE "+ schema + "." + tabla + "_"+ requestName +"_"+ processDate +" AS SELECT * FROM "+ schema + "." + tabla +";";
+					
+					//TODO: AÒadir una lÌnea que inserte en la tabla nueva solo el registro del rut que queremos respaldar, de esa manera solo nos llevamos los registros modificados
+
+					backupQueryLines.put(pos, query);
+					
+				});
+				
+			}else {
+				System.out.println ("Tables name not Informed");
+				logger.error("Tables name not Informed");
+				return null;
+			}			
+		}else {
+			System.out.println ("RequestName not Informed");
+			logger.error ("RequestName not Informed");
+			return null;
+		}
+		
+		return backupQueryLines;				
+	}//Fin de createCDMSTBackupQuery
+
+	
 	public Map <Integer,String> createCustDetailsRollbackQuery (String requestName, String processDate, String schema, Map <Integer,String> tablas)
 	{
 		Map <Integer,String> rollbackQueryLines = new HashMap <Integer,String> ();
@@ -733,11 +774,25 @@ public class QueryTools {
 					
 					if (!tabla.equalsIgnoreCase("CDMST")) {
 
-						//@TODO: crear la l√≥gica que genera una l√≠nea de select a insert desde la CUST_DETAILS de respaldo a la principal 
-//						Probar si funciona la siguiente linea:
-//							INSERT INTO INTELLECTCARDS.CDMST SELECT * FROM INTELLECTCARDS.CDMST_7805_20181103 WHERE RUT = "";
-
-/*						query = "TRUNCATE TABLE "+ schema +"." + tabla +";";
+/*						//@TODO: crear la logica que genera una l√≠nea de select a insert desde la CUST_DETAILS de respaldo a la principal 
+						Probar si funciona la siguiente linea:
+							
+						20190508: Construir un mÈtodo de rollback para las actualizaciones de direcciones, que haga la vuelta atr·s de la cust_details con esta query
+						  para no arriesgar.
+						  
+						  	UPDATE INTELLECTCARDS.CUST_DETAILS SET 
+						  	STMT_MAIL_INSTR = Select STMT_MAIL_INSTR from INTELLECTCARDS.CUST_DETAILS_10136_20190508 Where RUT_CLIENTE ='188995195',
+						  	CALLE = Select CALLE from INTELLECTCARDS.CUST_DETAILS_10136_20190508 Where RUT_CLIENTE ='188995195',
+						  	DETALLE = Select DETALLE from INTELLECTCARDS.CUST_DETAILS_10136_20190508 Where RUT_CLIENTE ='188995195',
+						  	NUMERO = Select NUMERO from INTELLECTCARDS.CUST_DETAILS_10136_20190508 Where RUT_CLIENTE ='188995195',
+						  	COD_COMUNA = Select COD_COMUNA from INTELLECTCARDS.CUST_DETAILS_10136_20190508 Where RUT_CLIENTE ='188995195',
+						  	COD_REGION = Select COD_REGION from INTELLECTCARDS.CUST_DETAILS_10136_20190508 Where RUT_CLIENTE ='188995195',
+						  	MAKER_DT = sysdate 
+						  	Where RUT_CLIENTE ='188995195';
+						  	
+*/
+						/*						
+ * 						query = "TRUNCATE TABLE "+ schema +"." + tabla +";";
 						query = query + newline;
 						query = query + "INSERT INTO "+ schema +"." + tabla +" SELECT * FROM "+ schema +"." + tabla +"_"+ requestName +"_"+ processDate +";";
 						query = query + newline;
@@ -777,14 +832,21 @@ public class QueryTools {
 
 				Integer pos = new Integer (0);
 				
-//					query = "TRUNCATE TABLE "+ schema +"." + tabla +";";
-//					query = query + newline;
-//					query = query + "INSERT INTO "+ schema +"." + tabla +" SELECT * FROM "+ schema +"." + tabla +"_"+ requestName +"_"+ processDate +";";
-//					query = query + newline;
-//					query = query + "COMMIT;";
-				//@TODO: crear la l√≥gica que genera una l√≠nea de select a insert desde la CDMST de respaldo a la principal 
-//				Probar si funciona la siguiente linea:
-//					INSERT INTO INTELLECTCARDS.CDMST SELECT * FROM INTELLECTCARDS.CDMST_7805_20181103 WHERE RUT = "";
+/*
+				20190508: Construir un mÈtodo de rollback para las actualizaciones de direcciones, que haga la vuelta atr·s de la cust_details con esta query
+				  para no arriesgar.
+				  
+					UPDATE INTELLECTCARDS.CDMST SET 
+					ADDR_LINE_1 = Select ADDR_LINE_1 from INTELLECTCARDS.CDMST_10136_20190508 Where CIVIL_ID ='188995195',
+					ADDR_LINE_2 = Select ADDR_LINE_2 from INTELLECTCARDS.CDMST_10136_20190508 Where CIVIL_ID ='188995195',
+					ADDR_LINE_3 = Select ADDR_LINE_3 from INTELLECTCARDS.CDMST_10136_20190508 Where CIVIL_ID ='188995195',
+					ADDR_LINE_4 = Select ADDR_LINE_4 from INTELLECTCARDS.CDMST_10136_20190508 Where CIVIL_ID ='188995195',
+					CITY = Select CITY from INTELLECTCARDS.CDMST_10136_20190508 Where CIVIL_ID ='188995195',
+					COUNTRY = Select COUNTRY from INTELLECTCARDS.CDMST_10136_20190508 Where CIVIL_ID ='188995195' 
+					Where CIVIL_ID ='188995195';
+		
+					
+*/
 				
 				currentQueryLines.put(pos, query);
 
