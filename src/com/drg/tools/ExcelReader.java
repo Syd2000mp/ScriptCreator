@@ -11,9 +11,7 @@ import org.apache.log4j.Logger;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.ss.usermodel.*;
 
-import com.drg.data.CustDetailsData;
-import com.drg.data.UtilityPmtData; 
-
+import com.drg.data.*; 
 
 public class ExcelReader {
 	
@@ -66,6 +64,8 @@ public class ExcelReader {
 		 return customersDetails;
 		 
 	}// Fin de ReadCustDetailsDataFile con control de cabecera
+
+
 	
 	private static CustDetailsData readRowCellsCustDetails(Row fila) {
 		
@@ -363,7 +363,7 @@ public class ExcelReader {
     	}
     	
 		
-	}//Fin de readRowCells
+	}//Fin de readRowCellsCustDetails
 	
 	public static Map <Integer,UtilityPmtData> readUtilityPmtDataFile (String filepath){
 
@@ -604,6 +604,122 @@ public class ExcelReader {
 		 
 	}// Fin de ReadPatDesafiliationDataFile con control de cabecera
 
+	public static Map <Integer,AddrsBlockData> readAddrsBlockDataFile (String filepath){
 
+     	if (logger.isDebugEnabled()){
+ 			logger.debug("Entering in readCustDetailsDataFile with filepath= " + filepath);
+ 		}
+		
+		Map <Integer,AddrsBlockData> addrsBlockData = new HashMap <Integer,AddrsBlockData> ();
+		
+		addrsBlockData = readAddrsBlockDataFile (filepath, true);
+		 
+		 return addrsBlockData;
+		
+	}// fin de AddrsBlockData sin control de cabecera
+
+	public static Map <Integer,AddrsBlockData> readAddrsBlockDataFile (String filepath, boolean withHeader){
+		
+     	if (logger.isDebugEnabled()){
+ 			logger.debug("Entering in readAddrsBlockDataFile with filepath= " + filepath + "and withHeader = " + withHeader);
+ 		}
+
+		logger.info("Leyendo el archivo de entrada " + filepath);
+		System.out.println("Leyendo el archivo de entrada " + filepath);
+
+     	
+		Map <Integer,AddrsBlockData> addrsBlockData = new HashMap <Integer,AddrsBlockData> ();
+		 
+		 Map <Integer,Row> excellines = ReadExcelDataFile (filepath);
+
+		 if ((excellines!=null)&(!excellines.isEmpty()))
+		 {
+			 excellines.forEach((pos,fila)->{
+				 if (fila!=null) {
+					 AddrsBlockData addrsBlkData = readRowCellsAddrsBlockData(fila);
+					 addrsBlockData.put(pos, addrsBlkData);
+				 }	
+				});
+
+
+		 } else {
+			 logger.fatal("Archivo excel vacio");
+		 }
+		  
+		 return addrsBlockData;
+		 
+	}// Fin de readAddrsBlockDataFile con control de cabecera
+
+	private static AddrsBlockData readRowCellsAddrsBlockData(Row fila) {
+		
+		/* Controlo que la fila sea mayor a 0 porque trae cabecera y los datos empiezan en
+		la linea 2*/
+		
+		/*
+		Se asume que el orden de las columnas en el archivo es: 
+		0: rut
+		1: codDireccion
+		2: causalDevol
+		*/
 	
-}
+		
+	// Creo un DataFormatter para leer todos los datos como String
+		DataFormatter dataFormatter = new DataFormatter();
+	
+		
+		AddrsBlockData datosLinea = new AddrsBlockData ();
+		int nullfields = 0;
+		
+		Cell valorCelda = fila.getCell(0);
+		String svalorCelda = dataFormatter.formatCellValue(valorCelda);
+		
+		if ((svalorCelda!=null)&& (!svalorCelda.equalsIgnoreCase(""))){
+	    	datosLinea.setRut(svalorCelda);
+	
+	    	if (logger.isDebugEnabled()){
+				logger.debug("Rut = " + svalorCelda);
+			}
+	    	
+		}else {
+			nullfields++;
+		}
+	
+		valorCelda = fila.getCell(1);
+		svalorCelda = dataFormatter.formatCellValue(valorCelda);
+		if ((svalorCelda!=null)&& (!svalorCelda.equalsIgnoreCase(""))){
+	    	datosLinea.setCodDireccion(svalorCelda);
+	
+	    	if (logger.isDebugEnabled()){
+				logger.debug("CodDireccion = " + svalorCelda);
+			}
+	    	
+		}else {
+			nullfields++;
+		}
+	
+		valorCelda = fila.getCell(2);
+		svalorCelda = dataFormatter.formatCellValue(valorCelda);
+		if ((svalorCelda!=null)&& (!svalorCelda.equalsIgnoreCase(""))){
+	    	datosLinea.setCausalDevol(svalorCelda);
+	
+	    	if (logger.isDebugEnabled()){
+				logger.debug("CausalDevol = " + svalorCelda);
+			}
+	    	
+		}else {
+			nullfields++;
+		}
+	
+	
+		if (nullfields<2) {
+			return datosLinea;
+		}else {
+			//Se retorna null para que la linea no se añada a la coleccion
+			return null;
+	
+		}
+	
+	
+	}//Fin de readRowCells
+
+}// Fin de ExcelReader

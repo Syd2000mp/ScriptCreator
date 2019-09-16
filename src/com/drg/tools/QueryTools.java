@@ -688,7 +688,7 @@ public class QueryTools {
 	
 	//TODO: Hacer el backup y rollback genÃ©rico pasÃ¡ndole el listado de tablas a respaldar
 	
-	public Map <Integer,String> createCustDetailsBackupQuery (String requestName, String processDate, String schema, Map <Integer,String> tablas )
+	public Map <Integer,String> createBackupQuery (String requestName, String processDate, String schema, Map <Integer,String> tablas )
 	{
 		//TODO: Hacer este Backup query creator solo para custdetails, seleccionando solo los registros que modificaremos en base al rut
 
@@ -704,8 +704,6 @@ public class QueryTools {
 
 					String query = "CREATE TABLE "+ schema + "." + tabla + "_"+ requestName +"_"+ processDate +" AS SELECT * FROM "+ schema + "." + tabla +";";
 
-					//TODO: Añadir una línea que inserte en la tabla nueva solo el registro del rut que queremos respaldar, de esa manera solo nos llevamos los registros modificados
-					
 					backupQueryLines.put(pos, query);
 					
 				});
@@ -724,9 +722,10 @@ public class QueryTools {
 		return backupQueryLines;				
 	}//Fin de createCustDetailsBackupQuery
 	
-	public Map <Integer,String> createCDMSTBackupQuery (String requestName, String processDate, String schema, Map <Integer,String> tablas )
+
+	public Map <Integer,String> createRutBackupQuery (String requestName, String processDate, String schema, Map <Integer,String> tablas,  Map <Integer,String> ruts )
 	{
-		//TODO: Hacer este Backup query creator solo para CDMS, seleccionando solo los registros que modificaremos en base al rut
+
 
 		Map <Integer,String> backupQueryLines = new HashMap <Integer,String> ();
 		
@@ -738,9 +737,9 @@ public class QueryTools {
 						logger.debug("Posicion : " + pos + " valor : " + tabla);
 					}
 
-					String query = "CREATE TABLE "+ schema + "." + tabla + "_"+ requestName +"_"+ processDate +" AS SELECT * FROM "+ schema + "." + tabla +";";
-					
-					//TODO: Añadir una línea que inserte en la tabla nueva solo el registro del rut que queremos respaldar, de esa manera solo nos llevamos los registros modificados
+					//TODO: Hacer este en base a un rut, para que mueva solo registros especificos en vez de la tabla completa
+
+					String query = "";//"CREATE TABLE "+ schema + "." + tabla + "_"+ requestName +"_"+ processDate +" AS SELECT * FROM "+ schema + "." + tabla +";";
 
 					backupQueryLines.put(pos, query);
 					
@@ -758,8 +757,9 @@ public class QueryTools {
 		}
 		
 		return backupQueryLines;				
-	}//Fin de createCDMSTBackupQuery
+	
 
+	}//createRutBackupQuery
 	
 	public Map <Integer,String> createCustDetailsRollbackQuery (String requestName, String processDate, String schema, Map <Integer,String> tablas)
 	{

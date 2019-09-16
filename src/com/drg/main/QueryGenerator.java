@@ -33,6 +33,7 @@ public class QueryGenerator {
 		 System.out.println("2 - Cust Details Adress Insert ");
 		 System.out.println("3 - Cust Details Basic Insert ");
 		 System.out.println("4 - Pat removal  ");
+		 System.out.println("5 - Address Block  ");
 		 System.out.println("");
 		 
 		 System.out.print("Please enter your option:  ");
@@ -105,6 +106,9 @@ public class QueryGenerator {
 			 case "4":
 				 	generatePatRemovaFiles  (creationdate, outputPath,excelFilepath, requestName,schema);
 				 	break;
+			 case "5":
+				 	generateBlockAdressFiles  (creationdate, outputPath,excelFilepath, requestName,schema);
+				 	break;
 			default:
 				 System.out.println("Wrong option ");
 				 break;
@@ -143,13 +147,13 @@ public class QueryGenerator {
 		tablas.put(new Integer (0), "CUST_DETAILS");
 		tablas.put(new Integer (1), "CDMST");
 
-		backupQuery = queryTools.createCustDetailsBackupQuery(requestName,creationdate,schema,tablas);
+		backupQuery = queryTools.createBackupQuery(requestName,creationdate,schema,tablas);
 	
 		if ((outputPath != null) && (outputPath.equals(""))) {
 			
-			filename = outputPath +"01_" + requestName +"_Backup_CustomerDetailsTables_" + creationdate +".sql";
+			filename = outputPath +"01_" + requestName +"_BackupTablesScript" + creationdate +".sql";
 		}else {
-			filename = "01_" + requestName +"_Backup_CustomerDetailsTables_" + creationdate +".sql";
+			filename = "01_" + requestName +"_BackupTablesScript" + creationdate +".sql";
 		}
 
 		queryFileWriter.writeQueryFile(backupQuery, outputPath, filename, schema);
@@ -181,16 +185,16 @@ public class QueryGenerator {
 		
 		if ((outputPath != null) && (outputPath.equals(""))) {
 			
-			filename = outputPath +"03_" + requestName +"_Rollback_CustomerDetailsTables_" + creationdate +".sql";
+			filename = outputPath +"03_" + requestName +"_RollbackTablesScript_" + creationdate +".sql";
 		}else {
-			filename = "03_" + requestName +"_Rollback_CustomerDetailsTables_" + creationdate +".sql";
+			filename = "03_" + requestName +"_RollbackTablesScript_" + creationdate +".sql";
 		}
 		
 		queryFileWriter.writeQueryFile(rollbackQuery, outputPath, filename, schema);
 		
 		
-		System.out.println("Se completó la ejecución con exito.");
-		logger.info("Se completó la ejecución con exito.");
+		System.out.println("Se completo la ejecucion con exito.");
+		logger.info("Se completo la ejecucion con exito.");
 		
 	}//generateCustDetailsUpdateFiles
 
@@ -223,13 +227,13 @@ public class QueryGenerator {
 		tablas.put(new Integer (0), "CUST_DETAILS");
 		tablas.put(new Integer (1), "CDMST");
 
-		backupQuery = queryTools.createCustDetailsBackupQuery(requestName,creationdate,schema,tablas);
+		backupQuery = queryTools.createBackupQuery(requestName,creationdate,schema,tablas);
 	
 		if ((outputPath != null) && (outputPath.equals(""))) {
 			
-			filename = outputPath +"01_" + requestName +"_Backup_CustomerDetailsTables_" + creationdate +".sql";
+			filename = outputPath +"01_" + requestName +"_BackupTablesScript" + creationdate +".sql";
 		}else {
-			filename = "01_" + requestName +"_Backup_CustomerDetailsTables_" + creationdate +".sql";
+			filename = "01_" + requestName +"_BackupTablesScript" + creationdate +".sql";
 		}
 
 		queryFileWriter.writeQueryFile(backupQuery, outputPath, filename, schema);
@@ -244,9 +248,9 @@ public class QueryGenerator {
 
 		if ((outputPath != null) && (outputPath.equals(""))) {
 			
-			filename = outputPath +"02_" + requestName +"_Insert_CustomerDetailsTables_" + creationdate +".sql";
+			filename = outputPath +"02_" + requestName +"_InsertTablesScript_" + creationdate +".sql";
 		}else {
-			filename = "02_" + requestName +"_Insert_CustomerDetailsTables_" + creationdate +".sql";
+			filename = "02_" + requestName +"_InsertTablesScript_" + creationdate +".sql";
 		}
 		
 		queryFileWriter.writeQueryFile(custDetailsQuery, outputPath, filename, schema);
@@ -261,16 +265,16 @@ public class QueryGenerator {
 		
 		if ((outputPath != null) && (outputPath.equals(""))) {
 			
-			filename = outputPath +"03_" + requestName +"_Rollback_CustomerDetailsTables_" + creationdate +".sql";
+			filename = outputPath +"03_" + requestName +"_RollbackTablesScript_" + creationdate +".sql";
 		}else {
-			filename = "03_" + requestName +"_Rollback_CustomerDetailsTables_" + creationdate +".sql";
+			filename = "03_" + requestName +"_RollbackTablesScript_" + creationdate +".sql";
 		}
 		
 		queryFileWriter.writeQueryFile(rollbackQuery, outputPath, filename, schema);
 		
 		
-		System.out.println("Se completó la ejecución con exito.");
-		logger.info("Se completó la ejecución con exito.");
+		System.out.println("Se completo la ejecucion con exito.");
+		logger.info("Se completo la ejecucion con exito.");
 		
 	}//generateCustDetailsInsertFiles
 	
@@ -304,13 +308,13 @@ public class QueryGenerator {
 		tablas.put(new Integer (0), "CUST_DETAILS");
 		//tablas.put(new Integer (1), "CDMST");
 
-		backupQuery = queryTools.createCustDetailsBackupQuery(requestName,creationdate,schema,tablas);
+		backupQuery = queryTools.createBackupQuery(requestName,creationdate,schema,tablas);
 	
 		if ((outputPath != null) && (outputPath.equals(""))) {
 			
-			filename = outputPath +"01_" + requestName +"_Backup_CustomerDetailsTables_" + creationdate +".sql";
+			filename = outputPath +"01_" + requestName +"_BackupTablesScript" + creationdate +".sql";
 		}else {
-			filename = "01_" + requestName +"_Backup_CustomerDetailsTables_" + creationdate +".sql";
+			filename = "01_" + requestName +"_BackupTablesScript" + creationdate +".sql";
 		}
 
 		queryFileWriter.writeQueryFile(backupQuery, outputPath, filename, schema);
@@ -325,9 +329,9 @@ public class QueryGenerator {
 
 		if ((outputPath != null) && (outputPath.equals(""))) {
 			
-			filename = outputPath +"02_" + requestName +"_Insert_CustomerDetailsTables_" + creationdate +".sql";
+			filename = outputPath +"02_" + requestName +"_InsertTablesScript_" + creationdate +".sql";
 		}else {
-			filename = "02_" + requestName +"_Insert_CustomerDetailsTables_" + creationdate +".sql";
+			filename = "02_" + requestName +"_InsertTablesScript_" + creationdate +".sql";
 		}
 		
 		queryFileWriter.writeQueryFile(custDetailsQuery, outputPath, filename, schema);
@@ -342,16 +346,16 @@ public class QueryGenerator {
 		
 		if ((outputPath != null) && (outputPath.equals(""))) {
 			
-			filename = outputPath +"03_" + requestName +"_Rollback_CustomerDetailsTables_" + creationdate +".sql";
+			filename = outputPath +"03_" + requestName +"_RollbackTablesScript_" + creationdate +".sql";
 		}else {
-			filename = "03_" + requestName +"_Rollback_CustomerDetailsTables_" + creationdate +".sql";
+			filename = "03_" + requestName +"_RollbackTablesScript_" + creationdate +".sql";
 		}
 		
 		queryFileWriter.writeQueryFile(rollbackQuery, outputPath, filename, schema);
 		
 		
-		System.out.println("Se completó la ejecución con exito.");
-		logger.info("Se completó la ejecución con exito.");
+		System.out.println("Se completa la ejecucion con exito.");
+		logger.info("Se completa la ejecucion con exito.");
 		
 	}//generateCustDetailsBasicInsertFiles
 	
@@ -384,7 +388,7 @@ public class QueryGenerator {
 		Map <Integer,String> tablas= new HashMap <Integer,String> ();
 		tablas.put(new Integer (0), "UTILITY_PYMT");
 
-		backupQuery = queryTools.createCustDetailsBackupQuery(requestName,creationdate,schema,tablas);
+		backupQuery = queryTools.createBackupQuery(requestName,creationdate,schema,tablas);
 	
 		if ((outputPath != null) && (outputPath.equals(""))) {
 			
@@ -421,18 +425,100 @@ public class QueryGenerator {
 		
 		if ((outputPath != null) && (outputPath.equals(""))) {
 			
-			filename = outputPath +"03_" + requestName +"_Rollback_CustomerDetailsTables_" + creationdate +".sql";
+			filename = outputPath +"03_" + requestName +"_RollbackTablesScript_" + creationdate +".sql";
 		}else {
-			filename = "03_" + requestName +"_Rollback_CustomerDetailsTables_" + creationdate +".sql";
+			filename = "03_" + requestName +"_RollbackTablesScript_" + creationdate +".sql";
 		}
 		
 		queryFileWriter.writeQueryFile(rollbackQuery, outputPath, filename, schema);
 		
 		
-		System.out.println("Se completó la ejecución con exito.");
-		logger.info("Se completó la ejecución con exito.");
+		System.out.println("Se completo la ejecucion con exito.");
+		logger.info("Se completo la ejecucion con exito.");
 		
 
 		
 	}//generatePatRemovaFiles
+
+	public static void generateBlockAdressFiles (String creationdate, String outputPath,String excelFilepath, String requestName,String schema) {
+
+        if (logger.isDebugEnabled()) {
+          	 logger.debug("Entrendo en generateBlockAdressFiles: ");
+          	 logger.debug("creationdate = " + creationdate);
+          	 logger.debug("outputPath = " + outputPath);
+          	 logger.debug("excelFilepath = " + excelFilepath);
+          	 logger.debug("requestName = " + requestName);
+           }
+	   	
+		String filename = "";
+		
+		
+		/* Pasos:
+		 * Leer el excel
+		 * Generar Script de backup (generar Query, calcular nombre, generar archivo
+		 * generar Script de creación
+		 * generar Script de rollback
+		 */
+
+		QueryTools queryTools = new QueryTools();
+		QueryFileWriter queryFileWriter = new QueryFileWriter ();
+		
+		//Creating BackupQuery
+		Map <Integer,String> backupQuery = new HashMap <Integer,String> ();
+				
+		Map <Integer,String> tablas= new HashMap <Integer,String> ();
+		tablas.put(new Integer (0), "CUST_DETAILS");
+
+		//TODO: Hacer el cambio para que ocupe el m�todo createRutBackupQuery 
+		backupQuery = queryTools.createBackupQuery(requestName,creationdate,schema,tablas);
+			
+		if ((outputPath != null) && (outputPath.equals(""))) {
+			
+			filename = outputPath +"01_" + requestName +"_BackupTablesScript" + creationdate +".sql";
+		}else {
+			filename = "01_" + requestName +"_BackupTablesScript" + creationdate +".sql";
+		}
+
+		queryFileWriter.writeQueryFile(backupQuery, outputPath, filename, schema);
+		
+		
+		Map <Integer,AddrsBlockData> addrsBlockData = new HashMap <Integer,AddrsBlockData> ();
+		
+		addrsBlockData = ExcelReader.readCustDetailsDataFile (excelFilepath, true);
+		Map <Integer,String> addrsBlockQuery= new HashMap <Integer,String> ();
+		addrsBlockQuery = queryTools.createAddrsBlockInsertQuery(addrsBlockData);
+
+		if ((outputPath != null) && (outputPath.equals(""))) {
+			
+			filename = outputPath +"02_" + requestName +"_InsertTablesScript_" + creationdate +".sql";
+		}else {
+			filename = "02_" + requestName +"_InsertTablesScript_" + creationdate +".sql";
+		}
+		
+		queryFileWriter.writeQueryFile(addrsBlockQuery, outputPath, filename, schema);
+		
+		//Creating RollbackQuery
+		Map <Integer,String> rollbackQuery = new HashMap <Integer,String> ();
+		rollbackQuery = queryTools.createCustDetailsRollbackQuery (requestName,creationdate, schema, tablas);
+		
+		//@TODO: Pendiente de terminar el metodo de rollback solo con los registros de este caso
+		//rollbackQuery = cdmstRollbackQueryCreator(requestName, creationdate, schema, custDetailsData, rollbackQuery )
+
+		
+		if ((outputPath != null) && (outputPath.equals(""))) {
+			
+			filename = outputPath +"03_" + requestName +"_RollbackTablesScript_" + creationdate +".sql";
+		}else {
+			filename = "03_" + requestName +"_RollbackTablesScript_" + creationdate +".sql";
+		}
+		
+		queryFileWriter.writeQueryFile(rollbackQuery, outputPath, filename, schema);
+		
+		
+		System.out.println("Se completo la ejecucion con exito.");
+		logger.info("Se completo la ejecucion con exito.");
+		
+	}//generateBlockAdressFiles
+
+
 }// Fin de QueryGenerator
