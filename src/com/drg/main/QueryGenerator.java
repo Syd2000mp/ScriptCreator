@@ -469,7 +469,7 @@ public class QueryGenerator {
 		Map <Integer,String> tablas= new HashMap <Integer,String> ();
 		tablas.put(new Integer (0), "CUST_DETAILS");
 
-		//TODO: Hacer el cambio para que ocupe el método createRutBackupQuery 
+		//TODO: Hacer el cambio para que ocupe el mï¿½todo createRutBackupQuery 
 		backupQuery = queryTools.createBackupQuery(requestName,creationdate,schema,tablas);
 			
 		if ((outputPath != null) && (outputPath.equals(""))) {
@@ -484,7 +484,7 @@ public class QueryGenerator {
 		
 		Map <Integer,AddrsBlockData> addrsBlockData = new HashMap <Integer,AddrsBlockData> ();
 		
-		addrsBlockData = ExcelReader.readCustDetailsDataFile (excelFilepath, true);
+		addrsBlockData = ExcelReader.readAddrsBlockDataFile (excelFilepath, true);
 		Map <Integer,String> addrsBlockQuery= new HashMap <Integer,String> ();
 		addrsBlockQuery = queryTools.createAddrsBlockInsertQuery(addrsBlockData);
 
@@ -499,7 +499,7 @@ public class QueryGenerator {
 		
 		//Creating RollbackQuery
 		Map <Integer,String> rollbackQuery = new HashMap <Integer,String> ();
-		rollbackQuery = queryTools.createCustDetailsRollbackQuery (requestName,creationdate, schema, tablas);
+		rollbackQuery = queryTools.createAddrsBLockRollbackQuery (requestName,creationdate, schema, tablas);
 		
 		//@TODO: Pendiente de terminar el metodo de rollback solo con los registros de este caso
 		//rollbackQuery = cdmstRollbackQueryCreator(requestName, creationdate, schema, custDetailsData, rollbackQuery )

@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 
 import java.lang.IllegalArgumentException;
 
+import com.drg.data.AddrsBlockData;
 import com.drg.data.CustDetailsData;
 import com.drg.data.UtilityPmtData;
 
@@ -636,7 +637,7 @@ public class QueryTools {
 							commit;
 					
 */	
-					if (((rut != null)& (!"".equalsIgnoreCase(rut))) || ((rubro != null)& (!"".equalsIgnoreCase(rubro)))){
+					if (((rut != null)& (!"".equalsIgnoreCase(rut))) && ((rubro != null)& (!"".equalsIgnoreCase(rubro)))){
 
 						queryDataLineSBf.append("UPDATE INTELLECTCARDS.UTILITY_PYMT SET VERIFY_FLAG = 'D',RECORD_STATUS = 'D',MAKER = '"+ requestName +"', "
 								+ "MAKER_DT = TO_CHAR(SYSDATE,'YYYYMMDD'), VERIFIER = 'SCRIPT', VERIFIER_DT = TO_CHAR(SYSDATE,'YYYYMMDD') "
@@ -685,6 +686,114 @@ public class QueryTools {
 		return utilityPmtQueryLines;
 
 	}//End of createPATDEsafiliationQuery
+	
+	public Map <Integer,String> createAddrsBlockInsertQuery(Map <Integer, AddrsBlockData> addrsBlockData, String requestName){
+		
+		Map <Integer,String> addrsBlockQueryLines = new HashMap <Integer,String> ();
+
+		int recordNum = addrsBlockData.size();
+
+		if (recordNum >0){
+
+			addrsBlockData.forEach ((line,addrsBlockD)->{
+					String newline = System.getProperty("line.separator");
+					
+			    	if (logger.isDebugEnabled()){
+						logger.debug("Procesando la línea " + line);
+					}
+					
+			    	AddrsBlockData addrsBlock = addrsBlockD;
+					
+			    	/*
+			    	Se asume que el orden de las columnas en el archivo es: 
+			    	0: rut
+			    	1: codDireccion
+			    	2: causalDevol
+			    	*/
+				
+					if (addrsBlock!=null) {
+					
+					String rut = addrsBlock.getRut();
+			    	if (logger.isDebugEnabled()){
+						logger.debug("Rut:  " + rut);
+					}
+
+					
+					String codDireccion = addrsBlock.getCodDireccion();
+			    	if (logger.isDebugEnabled()){
+						logger.debug("codDireccion:  " + codDireccion);
+					}
+
+					String causalDevol = addrsBlock.getCausalDevol();
+			    	if (logger.isDebugEnabled()){
+						logger.debug("causalDevol:  " + causalDevol);
+					}
+
+					StringBuffer queryDataLineSBf = new StringBuffer();
+
+/*					Sample Query:
+						
+UPDATE CUST_DETAILS SET ADDR_BLOCK='Y', COD_DIRECCION = '2', 
+MOTIVO_RECHAZ='7', MOTIVO_RECHAZ_DESC = (SELECT MEANING FROM INTELLECTCARDS.RE900 WHERE CNAME = 'STATEMENT_ADDR_BLOCK_REASON' AND CVALUE ='7') 
+WHERE RUT_CLIENTE='25615867';
+					
+*/	
+					if (((rut != null)& (!"".equalsIgnoreCase(rut))) && ((codDireccion != null)& (!"".equalsIgnoreCase(codDireccion)))&& ((causalDevol != null)& (!"".equalsIgnoreCase(causalDevol)))){
+
+						queryDataLineSBf.append("UPDATE CUST_DETAILS SET ADDR_BLOCK='Y', COD_DIRECCION = '"+ codDireccion +"', "
+								+ "MOTIVO_RECHAZ='"+causalDevol+"'," + "MOTIVO_RECHAZ_DESC = (SELECT MEANING FROM INTELLECTCARDS.RE900 "
+								+ "WHERE CNAME = 'STATEMENT_ADDR_BLOCK_REASON' AND CVALUE ='" + causalDevol + "')"
+								+ "WHERE RUT_CLIENTE='"+rut+"';");
+
+						queryDataLineSBf = queryDataLineSBf.append(newline);
+						queryDataLineSBf = queryDataLineSBf.append("commit;");
+	
+					}else {
+						
+							logger.fatal("En la línea: " + line);
+
+						
+						if ((rut != null)& (!"".equalsIgnoreCase(rut))) {
+							
+							logger.fatal("El valor del rut está vacio");
+							
+						} 
+
+						if ((codDireccion != null)& (!"".equalsIgnoreCase(codDireccion))){
+				
+							logger.fatal("El valor del codigo de Direccion está vacio");
+						}
+
+						if ((causalDevol != null)& (!"".equalsIgnoreCase(causalDevol))){
+							
+							logger.fatal("El valor del causal de Devolucion está vacio");
+						}
+					}
+					
+					queryDataLineSBf = queryDataLineSBf.append(newline);
+					
+					
+					String queryDataLine =queryDataLineSBf.toString();
+					
+					if (logger.isDebugEnabled()){
+						logger.debug("Línea " + line);
+						logger.debug("consulta " + queryDataLine);
+					}
+					
+					addrsBlockQueryLines.put(line, queryDataLine);
+				}//fin de if (utilityPmt!=null) 
+				
+			});//fin del foreach
+			
+			
+		}else {
+			System.out.println("Datos de PAT de entrada vacios");
+			logger.error("Datos de PAT de entrada vacios");
+		}
+		
+		return addrsBlockQueryLines;
+
+	}//End of createAddrsBlockInsertQuery	
 	
 	//TODO: Hacer el backup y rollback genérico pasándole el listado de tablas a respaldar
 	
@@ -777,7 +886,7 @@ public class QueryTools {
 /*						//@TODO: crear la logica que genera una línea de select a insert desde la CUST_DETAILS de respaldo a la principal 
 						Probar si funciona la siguiente linea:
 							
-						20190508: Construir un m�todo de rollback para las actualizaciones de direcciones, que haga la vuelta atr�s de la cust_details con esta query
+						20190508: Construir un m�todo de rollback para las actualizaciones de direcciones, que haga la vuelta atr�s de la cust_details con esta query
 						  para no arriesgar.
 						  
 						  	UPDATE INTELLECTCARDS.CUST_DETAILS SET 
@@ -833,7 +942,7 @@ public class QueryTools {
 				Integer pos = new Integer (0);
 				
 /*
-				20190508: Construir un m�todo de rollback para las actualizaciones de direcciones, que haga la vuelta atr�s de la cust_details con esta query
+				20190508: Construir un m�todo de rollback para las actualizaciones de direcciones, que haga la vuelta atr�s de la cust_details con esta query
 				  para no arriesgar.
 				  
 					UPDATE INTELLECTCARDS.CDMST SET 
