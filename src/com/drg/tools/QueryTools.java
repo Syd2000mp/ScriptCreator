@@ -687,7 +687,7 @@ public class QueryTools {
 
 	}//End of createPATDEsafiliationQuery
 	
-	public Map <Integer,String> createAddrsBlockInsertQuery(Map <Integer, AddrsBlockData> addrsBlockData, String requestName){
+	public Map <Integer,String> createAddrsBlockInsertQuery(Map <Integer, AddrsBlockData> addrsBlockData){//, String requestName){
 		
 		Map <Integer,String> addrsBlockQueryLines = new HashMap <Integer,String> ();
 
