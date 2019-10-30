@@ -4,3 +4,4 @@ resources/scriptCreator.properties
 bin/com/drg/main/QueryGenerator.class
 bin/com/drg/tools/ExcelReader.class
 bin/com/drg/tools/QueryTools.class
+.classpath
