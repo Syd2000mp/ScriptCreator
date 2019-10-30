@@ -500,11 +500,8 @@ public class QueryGenerator {
 		
 		//Creating RollbackQuery
 		Map <Integer,String> rollbackQuery = new HashMap <Integer,String> ();
-		rollbackQuery = queryTools.createAddrsBLockRollbackQuery (requestName,creationdate, schema, tablas);
+		rollbackQuery = queryTools.createAddrsBLockRollbackQuery (requestName,creationdate, schema, addrsBlockData);
 		
-		//@TODO: Pendiente de terminar el metodo de rollback solo con los registros de este caso
-		//rollbackQuery = cdmstRollbackQueryCreator(requestName, creationdate, schema, custDetailsData, rollbackQuery )
-
 		
 		if ((outputPath != null) && (outputPath.equals(""))) {
 			

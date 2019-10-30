@@ -687,7 +687,7 @@ public class QueryTools {
 
 	}//End of createPATDEsafiliationQuery
 	
-	public Map <Integer,String> createAddrsBlockInsertQuery(Map <Integer, AddrsBlockData> addrsBlockData){//, String requestName){
+	public Map <Integer,String> createAddrsBlockInsertQuery(Map <Integer, AddrsBlockData> addrsBlockData){
 		
 		Map <Integer,String> addrsBlockQueryLines = new HashMap <Integer,String> ();
 
@@ -932,8 +932,7 @@ WHERE RUT_CLIENTE='25615867';
 		String query = "";
 		String tabla = "CDMST";
 		String newline = System.getProperty("line.separator");
-		
-		
+			
 		
 		if ((requestName!=null) && (!"".equalsIgnoreCase(requestName))) {
 
@@ -975,6 +974,64 @@ WHERE RUT_CLIENTE='25615867';
 		return currentQueryLines;				
 		
 	}//Find de cdmstRollbackQueryCreator
+	
+		
+	public Map <Integer,String> createAddrsBLockRollbackQuery(String requestName, String creationdate, String schema, Map <Integer,AddrsBlockData> addrsBlockData ) {
+
+		String newline = System.getProperty("line.separator");
+		Map <Integer,String> resultQueryLines = new HashMap <Integer,String> ();
+
+		int recordNum = addrsBlockData.size();
+
+		if (recordNum >0){
+
+			addrsBlockData.forEach ((line,addrsBlockD)->{
+					
+			    	if (logger.isDebugEnabled()){
+						logger.debug("Procesando la línea " + line);
+					}
+					
+			    	AddrsBlockData addrsBlock = addrsBlockD;
+					
+				
+					if (addrsBlock!=null) {
+					
+						String rut = addrsBlock.getRut();
+					
+				    	if (logger.isDebugEnabled()){
+							logger.debug("Rut:  " + rut);
+						}
+						
+						if ((requestName!=null) && (!"".equalsIgnoreCase(requestName))) {
+	
+								Integer pos = new Integer (0);
+								StringBuffer queryDataLineSBf = new StringBuffer();
+	
+								queryDataLineSBf.append("UPDATE INTELLECTCARDS.CUST_DETAILS SET ADDR_BLOCK='N'"
+										+ "WHERE RUT_CLIENTE='"+rut+"';");
+	
+								queryDataLineSBf = queryDataLineSBf.append(newline);
+								queryDataLineSBf = queryDataLineSBf.append("commit;");
+								
+								resultQueryLines.put(pos, queryDataLineSBf.toString());
+								
+						}else {
+							System.out.println ("RequestName not Informed");
+							logger.error ("RequestName not Informed");
+						}
+					}// fin del if (addrsBlock!=null) {
+				});//fin del foreach
+			
+			
+			}else {
+				System.out.println("Datos de PAT de entrada vacios");
+				logger.error("Datos de PAT de entrada vacios");
+			}
+
+		
+		return resultQueryLines;				
+		
+	}//Find de createAddrsBLockRollbackQuery
 	
 	
 }//end of QueryTools
