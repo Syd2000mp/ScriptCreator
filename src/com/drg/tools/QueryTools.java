@@ -1004,7 +1004,6 @@ WHERE RUT_CLIENTE='25615867';
 						
 						if ((requestName!=null) && (!"".equalsIgnoreCase(requestName))) {
 	
-								Integer pos = new Integer (0);
 								StringBuffer queryDataLineSBf = new StringBuffer();
 	
 								queryDataLineSBf.append("UPDATE INTELLECTCARDS.CUST_DETAILS SET ADDR_BLOCK='N'"
@@ -1013,7 +1012,8 @@ WHERE RUT_CLIENTE='25615867';
 								queryDataLineSBf = queryDataLineSBf.append(newline);
 								queryDataLineSBf = queryDataLineSBf.append("commit;");
 								
-								resultQueryLines.put(pos, queryDataLineSBf.toString());
+								resultQueryLines.put(line, queryDataLineSBf.toString());
+
 								
 						}else {
 							System.out.println ("RequestName not Informed");
