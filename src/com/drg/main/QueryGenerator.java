@@ -10,6 +10,7 @@ import java.util.Scanner;
 import com.drg.data.AddrsBlockData;
 import com.drg.data.CustDetailsData;
 import com.drg.data.UtilityPmtData;
+import com.drg.data.PhoneMailData;
 import com.drg.tools.ExcelReader;
 import com.drg.tools.QueryTools;
 import com.drg.tools.QueryFileWriter;
@@ -26,7 +27,6 @@ public class QueryGenerator {
 	final static Logger logger = Logger.getLogger(QueryGenerator.class);
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		
 
 		 System.out.println("Generator options: ");
@@ -35,6 +35,8 @@ public class QueryGenerator {
 		 System.out.println("3 - Cust Details Basic Insert ");
 		 System.out.println("4 - Pat removal  ");
 		 System.out.println("5 - Address Block  ");
+		 System.out.println("6 - Update Phone & Mail  ");
+		 System.out.println("7 - Create Branch Creation Script  ");
 		 System.out.println("");
 		 
 		 System.out.print("Please enter your option:  ");
@@ -63,6 +65,8 @@ public class QueryGenerator {
     		propFileData.load(input);
 
     		// vamos obteniendo los valores
+    		
+    		//@TODO: poner un nombre fijo y 
     		
     		creationdate = propFileData.getProperty("creationdate");    		
     		outputPath = propFileData.getProperty("outputPath");
@@ -105,10 +109,16 @@ public class QueryGenerator {
 				 	generateCustDetailsBasicInsertFiles (creationdate, outputPath,excelFilepath, requestName,schema);
 				 	break;
 			 case "4":
-				 	generatePatRemovaFiles  (creationdate, outputPath,excelFilepath, requestName,schema);
+				 	generatePatRemovaFiles (creationdate, outputPath,excelFilepath, requestName,schema);
 				 	break;
 			 case "5":
-				 	generateBlockAdressFiles  (creationdate, outputPath,excelFilepath, requestName,schema);
+				 	generateBlockAdressFiles (creationdate, outputPath,excelFilepath, requestName,schema);
+				 	break;
+			 case "6":
+				 	generateUpdatePMFiles (creationdate, outputPath,excelFilepath, requestName,schema);
+				 	break;
+			 case "7":
+				 	//generateBranchCreationScritp  ();
 				 	break;
 			default:
 				 System.out.println("Wrong option ");
@@ -518,5 +528,79 @@ public class QueryGenerator {
 		
 	}//generateBlockAdressFiles
 
+	public static void generateUpdatePMFiles (String creationdate, String outputPath,String excelFilepath, String requestName,String schema) {
+
+        if (logger.isDebugEnabled()) {
+          	 logger.debug("Entrendo en generateUpdatePMFiles: ");
+          	 logger.debug("creationdate = " + creationdate);
+          	 logger.debug("outputPath = " + outputPath);
+          	 logger.debug("excelFilepath = " + excelFilepath);
+          	 logger.debug("requestName = " + requestName);
+           }
+	   	
+		String filename = "";
+		
+		
+		/* Pasos:
+		 * Leer el excel
+		 * Generar Script de backup (generar Query, calcular nombre, generar archivo
+		 * generar Script de creación
+		 * generar Script de rollback
+		 */
+
+		QueryTools queryTools = new QueryTools();
+		QueryFileWriter queryFileWriter = new QueryFileWriter ();
+		
+		Map <Integer,PhoneMailData> phoneMailData = new HashMap <Integer,PhoneMailData> ();
+		
+		phoneMailData = ExcelReader.readPhoneMailDataFile (excelFilepath, true);
+		
+		//Creating BackupQuery
+		Map <Integer,String> backupQuery = new HashMap <Integer,String> ();
+				
+		//TODO: Hacer el cambio para que ocupe el m�todo createFMBackupQuery 
+		backupQuery = queryTools.createFMBackupQuery(requestName,creationdate,phoneMailData);
+			
+		if ((outputPath != null) && (outputPath.equals(""))) {
+			
+			filename = outputPath +"01_" + requestName +"_BackupTablesScript" + creationdate +".sql";
+		}else {
+			filename = "01_" + requestName +"_BackupTablesScript" + creationdate +".sql";
+		}
+
+		queryFileWriter.writeQueryFile(backupQuery, outputPath, filename, schema);
+		
+		
+		
+		Map <Integer,String> phoneMailQuery= new HashMap <Integer,String> ();
+		phoneMailQuery = queryTools.createPhoneMailUpdateQuery(phoneMailData,requestName);
+
+		if ((outputPath != null) && (outputPath.equals(""))) {
+			
+			filename = outputPath +"02_" + requestName +"_InsertTablesScript_" + creationdate +".sql";
+		}else {
+			filename = "02_" + requestName +"_InsertTablesScript_" + creationdate +".sql";
+		}
+		
+		queryFileWriter.writeQueryFile(phoneMailQuery, outputPath, filename, schema);
+		
+		//Creating RollbackQuery
+		Map <Integer,String> rollbackQuery = new HashMap <Integer,String> ();
+		rollbackQuery = queryTools.createFMRollbackQuery (requestName,creationdate, schema, phoneMailData);
+		
+		if ((outputPath != null) && (outputPath.equals(""))) {
+			
+			filename = outputPath +"03_" + requestName +"_RollbackTablesScript_" + creationdate +".sql";
+		}else {
+			filename = "03_" + requestName +"_RollbackTablesScript_" + creationdate +".sql";
+		}
+		
+		queryFileWriter.writeQueryFile(rollbackQuery, outputPath, filename, schema);
+		
+		
+		System.out.println("Se completo la ejecucion con exito.");
+		logger.info("Se completo la ejecucion con exito.");
+		
+	}//generateUpdatePMFiles
 
 }// Fin de QueryGenerator

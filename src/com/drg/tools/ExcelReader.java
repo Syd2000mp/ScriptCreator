@@ -714,12 +714,128 @@ public class ExcelReader {
 		if (nullfields<2) {
 			return datosLinea;
 		}else {
-			//Se retorna null para que la linea no se añada a la coleccion
+			//Se retorna null para que la linea no se aï¿½ada a la coleccion
 			return null;
 	
 		}
 	
 	
-	}//Fin de readRowCells
+	}//Fin de readRowCellsAddrsBlockData
+	
+	public static Map <Integer,PhoneMailData> readPhoneMailDataFile (String filepath, boolean withHeader){
+		
+     	if (logger.isDebugEnabled()){
+ 			logger.debug("Entering in readPhoneMailDataFile with filepath= " + filepath + "and withHeader = " + withHeader);
+ 		}
 
+		logger.info("Leyendo el archivo de entrada " + filepath);
+		System.out.println("Leyendo el archivo de entrada " + filepath);
+
+     	
+		Map <Integer,PhoneMailData> phoneMailData = new HashMap <Integer,PhoneMailData> ();
+		 
+		 Map <Integer,Row> excellines = ReadExcelDataFile (filepath);
+
+		 if ((excellines!=null)&(!excellines.isEmpty()))
+		 {
+			 excellines.forEach((pos,fila)->{
+				 if (fila!=null) {
+					 PhoneMailData phoneMailRow = readRowCellsPhoneMailData(fila);
+					 phoneMailData.put(pos, phoneMailRow);
+				 }	
+				});
+
+
+		 } else {
+			 logger.fatal("Archivo excel vacio");
+		 }
+		  
+		 return phoneMailData;
+		 
+	}// Fin de readPhoneMailDataFile con control de cabecera
+
+	private static PhoneMailData readRowCellsPhoneMailData(Row fila) {
+		
+		/* Controlo que la fila sea mayor a 0 porque trae cabecera y los datos empiezan en
+		la linea 2*/
+		
+		/*
+		Se asume que el orden de las columnas en el archivo es: 
+		0: rut
+		1: phoneNum
+		2: mailId
+		3: serverId
+		*/
+		
+	// Creo un DataFormatter para leer todos los datos como String
+		DataFormatter dataFormatter = new DataFormatter();
+	
+		
+		PhoneMailData datosLinea = new PhoneMailData ();
+		int nullfields = 0;
+		
+		Cell valorCelda = fila.getCell(0);
+		String svalorCelda = dataFormatter.formatCellValue(valorCelda);
+		
+		if ((svalorCelda!=null)&& (!svalorCelda.equalsIgnoreCase(""))){
+	    	datosLinea.setRut(svalorCelda);
+	
+	    	if (logger.isDebugEnabled()){
+				logger.debug("Rut = " + svalorCelda);
+			}
+	    	
+		}else {
+			nullfields++;
+		}
+	
+		valorCelda = fila.getCell(1);
+		svalorCelda = dataFormatter.formatCellValue(valorCelda);
+		if ((svalorCelda!=null)&& (!svalorCelda.equalsIgnoreCase(""))){
+	    	datosLinea.setPhoneNum(svalorCelda);
+	
+	    	if (logger.isDebugEnabled()){
+				logger.debug("PhoneNum = " + svalorCelda);
+			}
+	    	
+		}else {
+			nullfields++;
+		}
+	
+		valorCelda = fila.getCell(2);
+		svalorCelda = dataFormatter.formatCellValue(valorCelda);
+		if ((svalorCelda!=null)&& (!svalorCelda.equalsIgnoreCase(""))){
+	    	datosLinea.setMailId(svalorCelda);
+	
+	    	if (logger.isDebugEnabled()){
+				logger.debug("MailId = " + svalorCelda);
+			}
+	    	
+		}else {
+			nullfields++;
+		}
+
+		valorCelda = fila.getCell(3);
+		svalorCelda = dataFormatter.formatCellValue(valorCelda);
+		if ((svalorCelda!=null)&& (!svalorCelda.equalsIgnoreCase(""))){
+	    	datosLinea.setServerId(svalorCelda);
+	
+	    	if (logger.isDebugEnabled()){
+				logger.debug("ServerId = " + svalorCelda);
+			}
+	    	
+		}else {
+			nullfields++;
+		}
+	
+	
+		if (nullfields<3) {
+			return datosLinea;
+		}else {
+			//Se retorna null para que la linea no se aï¿½ada a la coleccion
+			return null;	
+		}
+	
+	}//Fin de readRowCellsPhoneMailData
+	
+	
 }// Fin de ExcelReader

@@ -13,6 +13,7 @@ import java.lang.IllegalArgumentException;
 
 import com.drg.data.AddrsBlockData;
 import com.drg.data.CustDetailsData;
+import com.drg.data.PhoneMailData;
 import com.drg.data.UtilityPmtData;
 
 import org.apache.log4j.Logger;
@@ -796,6 +797,160 @@ WHERE RUT_CLIENTE='25615867';
 	}//End of createAddrsBlockInsertQuery	
 	
 	//TODO: Hacer el backup y rollback genérico pasándole el listado de tablas a respaldar
+
+	public Map <Integer,String> createPhoneMailUpdateQuery(Map <Integer, PhoneMailData> phoneMailData, String requestName){
+		
+		Map <Integer,String> phoneMailQueryLines = new HashMap <Integer,String> ();
+
+		int recordNum = phoneMailData.size();
+
+		if (recordNum >0){
+
+			phoneMailData.forEach ((line,phoneMailD)->{
+					String newline = System.getProperty("line.separator");
+					
+			    	if (logger.isDebugEnabled()){
+						logger.debug("Procesando la línea " + line);
+					}
+					
+			    	PhoneMailData phoneMaildata = phoneMailD;
+					
+					/*
+					Se asume que el orden de las columnas en el archivo es: 
+					0: rut
+					1: phoneNum
+					2: mailId
+					3: serverId
+					*/
+
+				
+					if (phoneMaildata!=null) {
+					
+					String rut = phoneMaildata.getRut();
+			    	if (logger.isDebugEnabled()){
+						logger.debug("Rut:  " + rut);
+					}
+
+					
+					String phoneNum = phoneMaildata.getPhoneNum();
+			    	if (logger.isDebugEnabled()){
+						logger.debug("PhoneNum:  " + phoneNum);
+					}
+	
+					
+					String mailId = phoneMaildata.getMailId();
+			    	if (logger.isDebugEnabled()){
+						logger.debug("MailId:  " + mailId);
+					}
+	
+					
+					String serverId = phoneMaildata.getServerId();
+			    	if (logger.isDebugEnabled()){
+						logger.debug("ServerId:  " + serverId);
+					}
+	
+					StringBuffer queryDataLineSBf = new StringBuffer();
+
+/*					Sample Query:
+						
+"UPDATE intellectcards.cust_details 
+SET EMAIL_USUARIO = 'dankaaracelly',EMAIL_SERVIDOR = 'gmail.com',
+NUM_TELEFONO = '934280072',TIP_TELEFONO = 'C' Where RUT_CLIENTE = '190256715'; 
+
+UPDATE intellectcards.cdmst SET EMAIL_ID = 'dankaaracelly@gmail.com', CELL_NO = '934280072', 
+ADDR_PHONE_2 = '934280072' Where RUT = '190256715';"							commit;
+					
+*/	
+					if ((rut != null)&& (!"".equalsIgnoreCase(rut))){
+						
+						if (((phoneNum != null)& (!"".equalsIgnoreCase(phoneNum)))
+							&& ((mailId != null)& (!"".equalsIgnoreCase(mailId)))
+							&& ((serverId != null)& (!"".equalsIgnoreCase(serverId)))
+							){
+	
+							queryDataLineSBf.append("UPDATE intellectcards.cust_details"
+									+ "SET EMAIL_USUARIO = '"+ mailId +"',EMAIL_SERVIDOR = '"+ serverId +"',"
+									+"NUM_TELEFONO = '"+ phoneNum +"',TIP_TELEFONO = 'C'"
+									+"Where RUT_CLIENTE = '"+rut+"';");
+									
+							queryDataLineSBf = queryDataLineSBf.append(newline);
+	
+							queryDataLineSBf.append("UPDATE intellectcards.cdmst "
+									+ "SET EMAIL_ID = '"+mailId+"@"+serverId+"', CELL_NO = '"+ phoneNum +"'," + 
+									"ADDR_PHONE_2 = '"+ phoneNum +"' Where RUT = '"+rut+"';");
+	
+							queryDataLineSBf = queryDataLineSBf.append("commit;");
+		
+						}else if (((phoneNum != null)& (!"".equalsIgnoreCase(phoneNum)))){
+	
+							queryDataLineSBf.append("UPDATE intellectcards.cust_details"
+									+"SET NUM_TELEFONO = '"+ phoneNum +"',TIP_TELEFONO = 'C'");
+									
+									if (((mailId != null)& (!"".equalsIgnoreCase(mailId)))
+										&& ((serverId != null)& (!"".equalsIgnoreCase(serverId)))){
+										queryDataLineSBf.append(", EMAIL_USUARIO = '"+ mailId +"', EMAIL_SERVIDOR = '"+ serverId +"'");
+									}
+									queryDataLineSBf.append("Where RUT_CLIENTE = '"+rut+"';");
+									
+							queryDataLineSBf = queryDataLineSBf.append(newline);
+	
+							queryDataLineSBf.append("UPDATE intellectcards.cdmst "
+									+"CELL_NO = '"+ phoneNum +"'," + 
+									"ADDR_PHONE_2 = '"+ phoneNum+"'");
+									
+									if (((mailId != null)& (!"".equalsIgnoreCase(mailId)))
+											&& ((serverId != null)& (!"".equalsIgnoreCase(serverId)))){
+											queryDataLineSBf.append(", EMAIL_ID = '"+mailId+"@"+serverId+"'");
+										}									
+							queryDataLineSBf.append("Where RUT = '"+rut+"';");
+	
+							queryDataLineSBf = queryDataLineSBf.append("commit;");
+					
+							
+						}else if (((mailId != null)& (!"".equalsIgnoreCase(mailId)))
+										&& ((serverId != null)& (!"".equalsIgnoreCase(serverId)))){
+						}
+							
+						queryDataLineSBf = queryDataLineSBf.append(newline);
+						
+						String queryDataLine =queryDataLineSBf.toString();
+						
+						if ((queryDataLine != null)&& (!"".equalsIgnoreCase(queryDataLine))){
+							
+							if (logger.isDebugEnabled()){
+								logger.debug("Línea " + line);
+								logger.debug("consulta " + queryDataLine);
+							}
+							
+							phoneMailQueryLines.put(line, queryDataLine);
+						}
+
+					}else {
+						logger.fatal("El valor del rut en este registro está vacio. Se rechaza el registro.");
+						logger.fatal("Datos del Registro rechazado:");
+						logger.fatal("rut = " + rut);
+						logger.fatal("phoneNum = " + phoneNum);
+						logger.fatal("mailId = " + mailId);
+						logger.fatal("serverId = " + serverId);
+						logger.fatal("El valor del rut en este registro está vacio. Registro ignorado");
+					}
+					
+					
+				}//fin de if (utilityPmt!=null) 
+				
+			});//fin del foreach
+			
+			
+		}else {
+			System.out.println("Datos de entrada vacios");
+			logger.error("Datos de entrada vacios");
+		}
+		
+		return phoneMailQueryLines;
+
+	}//End of createPhoneMailUpdateQuery
+
+	
 	
 	public Map <Integer,String> createBackupQuery (String requestName, String processDate, String schema, Map <Integer,String> tablas )
 	{
@@ -1032,6 +1187,157 @@ WHERE RUT_CLIENTE='25615867';
 		return resultQueryLines;				
 		
 	}//Find de createAddrsBLockRollbackQuery
+
+	/**
+	 * @param requestName
+	 * @param creationdate
+	 * @param schema
+	 * @param addrsBlockData
+	 * @return
+	 */
+	public Map <Integer,String> createFMBackupQuery(String requestName, String creationdate,Map <Integer,PhoneMailData> phoneMailData) {
+
+		String newline = System.getProperty("line.separator");
+		Map <Integer,String> resultQueryLines = new HashMap <Integer,String> ();
+
+		int recordNum = phoneMailData.size();
+
+		if (recordNum >0){
+			
+			final StringBuffer queryDataLinePMD = new StringBuffer();
+
+			queryDataLinePMD.append("CREATE TABLE INTELLECTCARDS.CUST_DETAILS_"+creationdate+"_"+requestName
+					+ " AS SELECT * FROM INTELLECTCARDS.CUST_DETAILS WHERE RUT_CLIENTE in (");
+			
+
+			phoneMailData.forEach ((line,phoneMailD)->{
+					
+			    	if (logger.isDebugEnabled()){
+						logger.debug("Procesando la línea " + line);
+					}
+					
+			    	PhoneMailData phonemail = phoneMailD;
+					
+				
+					if (phonemail!=null) {
+					
+						String rut = phonemail.getRut();
+					
+				    	if (logger.isDebugEnabled()){
+							logger.debug("Rut:  " + rut);
+						}
+						
+						if ((rut!=null) && (!"".equalsIgnoreCase(rut))) {
+							
+							if (line < recordNum) {
+								queryDataLinePMD.append("'"+rut+"',");
+							}else{
+								queryDataLinePMD.append("'"+rut+"'");
+							}
+								
+						}
+					}// fin del if (phonemail!=null) {
+				});//fin del foreach
+			
+			queryDataLinePMD.append(");");
+			queryDataLinePMD.append(newline);
+			
+			resultQueryLines.put(0, queryDataLinePMD.toString());
+			
+			
+			}else {
+				System.out.println("Fono / mail de entrada vacios");
+				logger.error("Fono / mail de entrada vacios");
+			}
+
+		return resultQueryLines;				
+		
+	}//Find de createFMBackupQuery
+
 	
+	public Map <Integer,String> createFMRollbackQuery (String requestName, String creationdate, String schema, Map <Integer,PhoneMailData> phoneMailData){
+
+		String newline = System.getProperty("line.separator");
+		Map <Integer,String> resultQueryLines = new HashMap <Integer,String> ();
+
+		if ((requestName!=null) && (!"".equalsIgnoreCase(requestName))) {
+
+			int recordNum = phoneMailData.size();
+
+			if (recordNum >0){
+				final StringBuffer queryDataLinePMD = new StringBuffer();
+				
+				phoneMailData.forEach ((line,phoneMailD)->{
+						
+				    	if (logger.isDebugEnabled()){
+							logger.debug("Procesando la línea " + line);
+						}
+						
+				    	PhoneMailData phonemail = phoneMailD;
+						
+					
+						if (phonemail!=null) {
+						
+							String rut = phonemail.getRut();
+						
+					    	if (logger.isDebugEnabled()){
+								logger.debug("Rut:  " + rut);
+							}
+	
+							if ((rut!=null) && (!"".equalsIgnoreCase(rut))) {	
+
+								queryDataLinePMD.append("UPDATE intellectcards.cust_details ");
+								queryDataLinePMD.append("SET EMAIL_USUARIO = (select EMAIL_USUARIO from INTELLECTCARDS.CUST_DETAILS_"+creationdate+"_MT"+requestName+" where RUT_CLIENTE = '"+rut+"'),");
+								queryDataLinePMD.append("EMAIL_SERVIDOR = (select EMAIL_SERVIDOR from INTELLECTCARDS.CUST_DETAILS_"+creationdate+"_MT"+requestName+" where RUT_CLIENTE =  '"+rut+"'),");
+								queryDataLinePMD.append("NUM_TELEFONO = (select NUM_TELEFONO from INTELLECTCARDS.CUST_DETAILS_"+creationdate+"_MT"+requestName+" where RUT_CLIENTE = '"+rut+"'),");
+								queryDataLinePMD.append("TIP_TELEFONO = (select TIP_TELEFONO from INTELLECTCARDS.CUST_DETAILS_"+creationdate+"_MT"+requestName+" where RUT_CLIENTE = '"+rut+"')");
+								queryDataLinePMD.append("Where RUT_CLIENTE = '"+rut+"';");
+
+								
+								sdsd
+/*
+								"UPDATE intellectcards.cust_details
+								SET EMAIL_USUARIO = (select EMAIL_USUARIO from INTELLECTCARDS.CUST_DETAILS_20191012_MT11627 where RUT_CLIENTE = '188365752'),
+								EMAIL_SERVIDOR = (select EMAIL_SERVIDOR from INTELLECTCARDS.CUST_DETAILS_20191012_MT11627 where RUT_CLIENTE = '188365752'),
+								NUM_TELEFONO = (select NUM_TELEFONO from INTELLECTCARDS.CUST_DETAILS_20191012_MT11627 where RUT_CLIENTE = '188365752'),
+								TIP_TELEFONO = (select TIP_TELEFONO from INTELLECTCARDS.CUST_DETAILS_20191012_MT11627 where RUT_CLIENTE = '188365752') 
+								Where RUT_CLIENTE = '188365752'; 
+								UPDATE intellectcards.cdmst
+								SET EMAIL_ID = (select EMAIL_ID from INTELLECTCARDS.CDMST_20191012_MT11627 where RUT = '188365752'),
+								CELL_NO = (select CELL_NO from INTELLECTCARDS.CDMST_20191012_MT11627 where RUT = '188365752'),
+								ADDR_PHONE_2 = (select ADDR_PHONE_2 from INTELLECTCARDS.CDMST_20191012_MT11627 where RUT = '188365752')
+								Where RUT = '188365752';"
+								
+*/
+							/*queryDataLineSBf.append("UPDATE INTELLECTCARDS.CUST_DETAILS SET ADDR_BLOCK='N'"
+									+ "WHERE RUT_CLIENTE='"+rut+"';");*/
+
+							queryDataLinePMD.append(newline);
+							queryDataLinePMD.append("commit;");
+							
+							resultQueryLines.put(line, queryDataLinePMD.toString());
+
+							}
+	
+									
+						}// fin del if (addrsBlock!=null) {
+				});//fin del foreach
+			}else {
+				System.out.println ("RequestName not Informed");
+				logger.error ("RequestName not Informed");
+			}
+			
+			
+			}else {
+				System.out.println("Fono / mail de entrada vacios");
+				logger.error("Fono / mail de entrada vacios");
+			}
+
+		
+		return resultQueryLines;				
+		
+		
+		
+	}//Fin de createFMRollbackQuery
 	
 }//end of QueryTools
