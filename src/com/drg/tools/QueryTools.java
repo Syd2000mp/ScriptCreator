@@ -868,8 +868,8 @@ ADDR_PHONE_2 = '934280072' Where RUT = '190256715';"							commit;
 							&& ((serverId != null)& (!"".equalsIgnoreCase(serverId)))
 							){
 	
-							queryDataLineSBf.append("UPDATE intellectcards.cust_details"
-									+ "SET EMAIL_USUARIO = '"+ mailId +"',EMAIL_SERVIDOR = '"+ serverId +"',"
+							queryDataLineSBf.append("UPDATE intellectcards.cust_details "
+									+ "SET EMAIL_USUARIO = '"+ mailId +"',EMAIL_SERVIDOR = '"+ serverId +"',IND_EECC_EMAIL = 'S', "
 									+"NUM_TELEFONO = '"+ phoneNum +"',TIP_TELEFONO = 'C'"
 									+"Where RUT_CLIENTE = '"+rut+"';");
 									
@@ -878,17 +878,18 @@ ADDR_PHONE_2 = '934280072' Where RUT = '190256715';"							commit;
 							queryDataLineSBf.append("UPDATE intellectcards.cdmst "
 									+ "SET EMAIL_ID = '"+mailId+"@"+serverId+"', CELL_NO = '"+ phoneNum +"'," + 
 									"ADDR_PHONE_2 = '"+ phoneNum +"' Where RUT = '"+rut+"';");
-	
+							
+							queryDataLineSBf = queryDataLineSBf.append(newline);
 							queryDataLineSBf = queryDataLineSBf.append("commit;");
 		
 						}else if (((phoneNum != null)& (!"".equalsIgnoreCase(phoneNum)))){
 	
-							queryDataLineSBf.append("UPDATE intellectcards.cust_details"
+							queryDataLineSBf.append("UPDATE intellectcards.cust_details "
 									+"SET NUM_TELEFONO = '"+ phoneNum +"',TIP_TELEFONO = 'C'");
 									
 									if (((mailId != null)& (!"".equalsIgnoreCase(mailId)))
 										&& ((serverId != null)& (!"".equalsIgnoreCase(serverId)))){
-										queryDataLineSBf.append(", EMAIL_USUARIO = '"+ mailId +"', EMAIL_SERVIDOR = '"+ serverId +"'");
+										queryDataLineSBf.append(", EMAIL_USUARIO = '"+ mailId +"', EMAIL_SERVIDOR = '"+ serverId +"',IND_EECC_EMAIL = 'S'");
 									}
 									queryDataLineSBf.append("Where RUT_CLIENTE = '"+rut+"';");
 									
@@ -904,6 +905,7 @@ ADDR_PHONE_2 = '934280072' Where RUT = '190256715';"							commit;
 										}									
 							queryDataLineSBf.append("Where RUT = '"+rut+"';");
 	
+							queryDataLineSBf = queryDataLineSBf.append(newline);
 							queryDataLineSBf = queryDataLineSBf.append("commit;");
 					
 							
@@ -1051,6 +1053,7 @@ ADDR_PHONE_2 = '934280072' Where RUT = '190256715';"							commit;
 						  	NUMERO = Select NUMERO from INTELLECTCARDS.CUST_DETAILS_10136_20190508 Where RUT_CLIENTE ='188995195',
 						  	COD_COMUNA = Select COD_COMUNA from INTELLECTCARDS.CUST_DETAILS_10136_20190508 Where RUT_CLIENTE ='188995195',
 						  	COD_REGION = Select COD_REGION from INTELLECTCARDS.CUST_DETAILS_10136_20190508 Where RUT_CLIENTE ='188995195',
+						  	IND_EECC_EMAIL = Select IND_EECC_EMAIL from INTELLECTCARDS.CUST_DETAILS_10136_20190508 Where RUT_CLIENTE ='188995195',, 
 						  	MAKER_DT = sysdate 
 						  	Where RUT_CLIENTE ='188995195';
 						  	
@@ -1294,7 +1297,7 @@ ADDR_PHONE_2 = '934280072' Where RUT = '190256715';"							commit;
 								queryDataLinePMD.append("Where RUT_CLIENTE = '"+rut+"';");
 
 								
-								sdsd
+							
 /*
 								"UPDATE intellectcards.cust_details
 								SET EMAIL_USUARIO = (select EMAIL_USUARIO from INTELLECTCARDS.CUST_DETAILS_20191012_MT11627 where RUT_CLIENTE = '188365752'),
