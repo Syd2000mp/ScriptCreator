@@ -563,9 +563,9 @@ public class QueryGenerator {
 			
 		if ((outputPath != null) && (outputPath.equals(""))) {
 			
-			filename = outputPath +"01_" + requestName +"_BackupTablesScript" + creationdate +".sql";
+			filename = outputPath +"01_" + requestName +"_BackupTablesScript_" + creationdate +".sql";
 		}else {
-			filename = "01_" + requestName +"_BackupTablesScript" + creationdate +".sql";
+			filename = "01_" + requestName +"_BackupTablesScript_" + creationdate +".sql";
 		}
 
 		queryFileWriter.writeQueryFile(backupQuery, outputPath, filename, schema);

@@ -911,6 +911,23 @@ ADDR_PHONE_2 = '934280072' Where RUT = '190256715';"							commit;
 							
 						}else if (((mailId != null)& (!"".equalsIgnoreCase(mailId)))
 										&& ((serverId != null)& (!"".equalsIgnoreCase(serverId)))){
+							
+							queryDataLineSBf.append("UPDATE intellectcards.cust_details "
+									+"SET EMAIL_USUARIO = '"+ mailId +"', EMAIL_SERVIDOR = '"+ serverId +"',IND_EECC_EMAIL = 'S' ");
+									
+									queryDataLineSBf.append("Where RUT_CLIENTE = '"+rut+"';");
+									
+							queryDataLineSBf = queryDataLineSBf.append(newline);
+	
+							queryDataLineSBf.append("UPDATE intellectcards.cdmst "
+									+" EMAIL_ID = '"+mailId+"@"+serverId+"'");
+																			
+							queryDataLineSBf.append("Where RUT = '"+rut+"';");
+	
+							queryDataLineSBf = queryDataLineSBf.append(newline);
+							queryDataLineSBf = queryDataLineSBf.append("commit;");
+					
+					
 						}
 							
 						queryDataLineSBf = queryDataLineSBf.append(newline);
