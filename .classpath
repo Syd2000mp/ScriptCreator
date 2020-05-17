@@ -7,7 +7,7 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/xmlbeans"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="C:/Users/david/OneDrive/JavaProjects/ScriptCreator/librerias/apache-log4j-1.2.17/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="/Users/david/OneDrive/JavaProjects/ScriptCreator/librerias/apache-log4j-1.2.17/log4j-1.2.17.jar"/>
 	<classpathentry kind="lib" path="log4j"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/poi4.0.1"/>
 	<classpathentry kind="output" path="bin"/>
