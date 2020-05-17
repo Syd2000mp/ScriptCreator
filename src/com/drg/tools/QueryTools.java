@@ -1240,7 +1240,6 @@ Where RUT_CLIENTE in('24460886','24542483');
 			queryDataLinePMD.append("CREATE TABLE INTELLECTCARDS.CUST_DETAILS_"+creationdate+"_"+requestName
 					+ " AS SELECT * FROM INTELLECTCARDS.CUST_DETAILS WHERE RUT_CLIENTE in (");
 			
-	    	int lineCounter = 0;
 
 			phoneMailData.forEach ((line,phoneMailD)->{
 					
@@ -1254,8 +1253,6 @@ Where RUT_CLIENTE in('24460886','24542483');
 				
 					if (phonemail!=null) {
 
-			//	    	lineCounter ++; Arreglar el tema del ambito para usar el contador y hacer bloques de 900 rut
-
 						String rut = phonemail.getRut();
 					
 				    	if (logger.isDebugEnabled()){
@@ -1265,7 +1262,7 @@ Where RUT_CLIENTE in('24460886','24542483');
 						if ((rut!=null) && (!"".equalsIgnoreCase(rut))) {
 						
 							try {
-								 float mod = (float)line%10; //se pone 10 para pruebas y se deberia dejar 800
+								 float mod = (float)line%800; //se pone 10 para pruebas y se deberia dejar 800
 								 if (mod==0.0) {
 
 									 queryDataLinePMD.append(");");
