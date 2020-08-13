@@ -973,7 +973,8 @@ ADDR_PHONE_2 = '934280072' Where RUT = '190256715';"							commit;
 	
 	public Map <Integer,String> createBackupQuery (String requestName, String processDate, String schema, Map <Integer,String> tablas )
 	{
-		//TODO: Hacer este Backup query creator solo para custdetails, seleccionando solo los registros que modificaremos en base al rut
+		//TODO: hacer este backup script dejando los datos en la cust_details_HIST para no generar tanta basura en producción
+		
 
 		Map <Integer,String> backupQueryLines = new HashMap <Integer,String> ();
 		
@@ -1009,6 +1010,7 @@ ADDR_PHONE_2 = '934280072' Where RUT = '190256715';"							commit;
 	public Map <Integer,String> createRutBackupQuery (String requestName, String processDate, String schema, Map <Integer,String> tablas,  Map <Integer,String> ruts )
 	{
 
+		TODO: hacer este backup script dejando los datos en la cust_details_HIST para no generar tanta basura en producción
 
 		Map <Integer,String> backupQueryLines = new HashMap <Integer,String> ();
 		
