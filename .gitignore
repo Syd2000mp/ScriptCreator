@@ -10,3 +10,4 @@ bin/com/drg/tools/QueryTools.class
 .classpath
 bin/com/drg/tools/ExcelReader.class
 *.class
+.classpath

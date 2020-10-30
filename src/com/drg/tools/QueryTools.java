@@ -903,7 +903,7 @@ ADDR_PHONE_2 = '934280072' Where RUT = '190256715';"							commit;
 											&& ((serverId != null)& (!"".equalsIgnoreCase(serverId)))){
 											queryDataLineSBf.append(", EMAIL_ID = '"+mailId+"@"+serverId+"'");
 										}									
-							queryDataLineSBf.append("Where RUT = '"+rut+"';");
+							queryDataLineSBf.append(" Where RUT = '"+rut+"';");
 	
 							queryDataLineSBf = queryDataLineSBf.append(newline);
 							queryDataLineSBf = queryDataLineSBf.append("commit;");
@@ -920,12 +920,13 @@ ADDR_PHONE_2 = '934280072' Where RUT = '190256715';"							commit;
 							queryDataLineSBf = queryDataLineSBf.append(newline);
 	
 							queryDataLineSBf.append("UPDATE intellectcards.cdmst "
-									+"SET EMAIL_ID = '"+mailId+"@"+serverId+"'");
+									+"SET EMAIL_ID = '"+mailId+"@"+serverId+"' ");
 																			
 							queryDataLineSBf.append("Where RUT = '"+rut+"';");
 	
 							queryDataLineSBf = queryDataLineSBf.append(newline);
 							queryDataLineSBf = queryDataLineSBf.append("commit;");
+							queryDataLineSBf = queryDataLineSBf.append(newline);
 					
 					
 						}
@@ -1010,7 +1011,7 @@ ADDR_PHONE_2 = '934280072' Where RUT = '190256715';"							commit;
 	public Map <Integer,String> createRutBackupQuery (String requestName, String processDate, String schema, Map <Integer,String> tablas,  Map <Integer,String> ruts )
 	{
 
-		TODO: hacer este backup script dejando los datos en la cust_details_HIST para no generar tanta basura en producción
+		//@TODO: hacer este backup script dejando los datos en la cust_details_HIST para no generar tanta basura en producción
 
 		Map <Integer,String> backupQueryLines = new HashMap <Integer,String> ();
 		
@@ -1184,7 +1185,7 @@ ADDR_PHONE_2 = '934280072' Where RUT = '190256715';"							commit;
 								StringBuffer queryDataLineSBf = new StringBuffer();
 	
 								queryDataLineSBf.append("UPDATE INTELLECTCARDS.CUST_DETAILS SET ADDR_BLOCK='N'"
-										+ "WHERE RUT_CLIENTE='"+rut+"';");
+										+ " WHERE RUT_CLIENTE='"+rut+"';");
 	
 								queryDataLineSBf = queryDataLineSBf.append(newline);
 								queryDataLineSBf = queryDataLineSBf.append("commit;");
@@ -1223,6 +1224,10 @@ ADDR_PHONE_2 = '934280072' Where RUT = '190256715';"							commit;
 		Map <Integer,String> resultQueryLines = new HashMap <Integer,String> ();
 
 		int recordNum = phoneMailData.size();
+		
+		if (logger.isDebugEnabled()){
+			logger.debug("Cantida de registros a procesar " + recordNum);
+		}
 
 		if (recordNum >0){
 			
@@ -1264,9 +1269,14 @@ Where RUT_CLIENTE in('24460886','24542483');
 						if ((rut!=null) && (!"".equalsIgnoreCase(rut))) {
 						
 							try {
-								 float mod = (float)line%800; //se pone 10 para pruebas y se deberia dejar 800
+								 float mod = (float)line%800; //se pone 5 para pruebas y se deberia dejar 800
 								 if (mod==0.0) {
-
+								 
+									 if (queryDataLinePMD.substring (queryDataLinePMD.length()-1,queryDataLinePMD.length()).equals(","))
+									 {
+										 queryDataLinePMD.delete(queryDataLinePMD.length()-1, queryDataLinePMD.length());	 
+									 }									 
+									 
 									 queryDataLinePMD.append(");");
 									 queryDataLinePMD.append(newline);
 									 queryDataLinePMD.append(newline);
@@ -1331,13 +1341,11 @@ Where RUT_CLIENTE in('24460886','24542483');
 												+ " FROM INTELLECTCARDS.CUST_DETAILS WHERE RUT_CLIENTE in (");
 								 }
 
-							
-							if (line < recordNum) {
-								queryDataLinePMD.append("'"+rut+"',");
-							}else if (line == recordNum) {
-								queryDataLinePMD.append("'"+rut+"'");
-							}
-							
+							 if (line < recordNum-1) {
+									queryDataLinePMD.append("'"+rut+"',");
+								}else {
+									queryDataLinePMD.append("'"+rut+"'");
+								}
 							
 							} catch (Exception e) {
 								// TODO poner bien los comentarios
