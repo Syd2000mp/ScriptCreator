@@ -1341,7 +1341,7 @@ Where RUT_CLIENTE in('24460886','24542483');
 												+ " FROM INTELLECTCARDS.CUST_DETAILS WHERE RUT_CLIENTE in (");
 								 }
 
-							 if (line < recordNum-1) {
+							 if (line < recordNum) {
 									queryDataLinePMD.append("'"+rut+"',");
 								}else {
 									queryDataLinePMD.append("'"+rut+"'");
